@@ -1,94 +1,490 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
+    "title": "PublicApi",
+    "description": "This API provides operations for managing products, users, and other resources.",
+    "termsOfService": "https://example.com/terms",
+    "contact": {
+      "name": "API Support",
+      "url": "https://example.com/support",
+      "email": "support@example.com"
     },
-    "version": "1.0.0"
+    "license": {
+      "name": "Use under XYZ License",
+      "url": "https://example.com/license"
+    },
+    "version": "v1"
   },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "paths": {
-    "/plants": {
+    "/public-api/item/base-info": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "tags": [
+          "Item"
+        ],
+        "summary": "Gets basic information about items.",
+        "description": "This endpoint retrieves basic item information, such as name, description, and availability. \r\nYou can filter the items based on various parameters.<br /><br /> <b>This operation consumes a token cost of 100.<b>",
         "parameters": [
           {
-            "name": "limit",
+            "name": "Market",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "required": true,
             "schema": {
+              "$ref": "#/components/schemas/Market"
+            }
+          },
+          {
+            "name": "Game",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/GameType"
+            }
+          },
+          {
+            "name": "Currency",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SteamCurrency"
+            }
+          },
+          {
+            "name": "SkipCount",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "TakeCount",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "maximum": 1000,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Order",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/BaseInfoOrderParameter"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Returns the list of items with basic information",
             "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BaseInfoItemResponse"
+                  }
+                }
+              },
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/BaseInfoItemResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BaseInfoItemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request contains invalid parameters"
+          }
+        }
+      }
+    },
+    "/public-api/item/advanced-info": {
+      "post": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Gets advanced information about items.",
+        "description": "This endpoint retrieves advanced item details such as pricing, manufacturer, and other extended attributes. \r\nFilters can be applied based on criteria such as price range or manufacturer.<br /><br /> <b>This operation consumes a token cost of 200.<b>",
+        "requestBody": {
+          "description": "The request containing filtering criteria such as price, manufacturer, etc.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdvancedInfoItemRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdvancedInfoItemRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdvancedInfoItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the list of items with advanced information",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdvancedInfoItemResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdvancedInfoItemResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdvancedInfoItemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request contains invalid parameters"
+          }
+        }
+      }
+    },
+    "/public-api/item/get-history": {
+      "post": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Gets the history of an item based on provided filters.",
+        "description": "This endpoint retrieves the historical data of items, such as price changes, availability over time, etc.\r\nIt is useful for tracking the evolution of item attributes.<br /><br /> <b>This operation consumes a token cost of 300.<b>",
+        "requestBody": {
+          "description": "The request containing filtering criteria such as time range and item ID.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemHistoryInfoRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemHistoryInfoRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemHistoryInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the item history data",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemHistoryInfoResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemHistoryInfoResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemHistoryInfoResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request contains invalid parameters"
+          }
+        }
+      }
+    },
+    "/public-api/item/analyze-items": {
+      "post": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Analyzes item data to provide insights such as trends and patterns.",
+        "description": "This endpoint analyzes items based on various parameters like sales, popularity, and availability. \r\nIt provides insights that help in decision-making.<br /><br /> <b>This operation consumes a token cost of 400.<b>",
+        "requestBody": {
+          "description": "The request containing the criteria for analyzing the items.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeItemsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeItemsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeItemsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the analyzed item data",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnalyzeItemsResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnalyzeItemsResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnalyzeItemsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request contains invalid parameters"
+          }
+        }
+      }
+    },
+    "/public-api/item/compare-tables": {
+      "post": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Compares two sets of items and returns the differences.",
+        "description": "This endpoint compares two sets of items, typically from different markets or categories, \r\nand returns the differences, such as price variations, availability, and other attributes.<br /><br /> <b>This operation consumes a token cost of 500.<b>",
+        "requestBody": {
+          "description": "The request containing the two sets of items to compare and the comparison criteria.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareTablesRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareTablesRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareTablesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the result of the comparison",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompareTablesResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompareTablesResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompareTablesResponse"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "If the request contains invalid parameters or duplicate filters",
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BadRequestCompareTablesResponse"
+                  }
                 }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
+              },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BadRequestCompareTablesResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BadRequestCompareTablesResponse"
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "unexpected error",
+          "401": {
+            "description": "Unauthorized",
             "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
                 }
               }
             }
@@ -96,32 +492,212 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/public-api/item/item-statistics": {
+      "get": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Retrieves statistics about items based on provided filters.",
+        "description": "This endpoint fetches statistics related to items such as sales, profit, and availability \r\nover a specified period. It can be used for data analysis and reporting.<br /><br /> <b>This operation consumes a token cost of 600.<b>",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
+            "name": "Game",
+            "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "$ref": "#/components/schemas/GameType"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "Returns the item statistics based on the provided filters",
             "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemsStatisticsResponse"
+                  }
+                }
+              },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemsStatisticsResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetItemsStatisticsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedPublicApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request contains invalid parameters"
+          }
+        }
+      }
+    },
+    "/public-api/info/supported-markets": {
+      "get": {
+        "tags": [
+          "SupportedFeatures"
+        ],
+        "summary": "Gets a list of supported markets.",
+        "description": "This endpoint retrieves all supported markets for the application.\r\nIt returns a list of markets that are not marked as unsupported by the `NotSupportedEnumMemberAttribute`.",
+        "responses": {
+          "200": {
+            "description": "Returns a list of supported markets.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedMarketResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedMarketResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedMarketResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "If there is an internal server error."
+          }
+        }
+      }
+    },
+    "/public-api/info/supported-currencies": {
+      "get": {
+        "tags": [
+          "SupportedFeatures"
+        ],
+        "summary": "Gets a list of supported currencies.",
+        "description": "This endpoint retrieves all supported currencies for the application.\r\nIt returns a list of currencies that are not marked as unsupported by the `NotSupportedEnumMemberAttribute`.",
+        "responses": {
+          "200": {
+            "description": "Returns a list of supported currencies.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedCurrenciesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedCurrenciesResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedCurrenciesResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "If there is an internal server error."
+          }
+        }
+      }
+    },
+    "/public-api/info/default-commissions": {
+      "get": {
+        "tags": [
+          "SupportedFeatures"
+        ],
+        "summary": "Gets the default commission values.",
+        "description": "This endpoint retrieves the default commission values used in the application.\r\nIt calls the underlying service to fetch the default commission data and returns it in a standardized response format.",
+        "responses": {
+          "200": {
+            "description": "Returns the default commission values.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultCommissionsResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultCommissionsResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultCommissionsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "If there is an internal server error."
+          }
+        }
+      }
+    },
+    "/public-api/info/method-costs": {
+      "get": {
+        "tags": [
+          "SupportedFeatures"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetPublicApiMethodCostsResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetPublicApiMethodCostsResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetPublicApiMethodCostsResponse"
+                  }
                 }
               }
             }
@@ -132,63 +708,1405 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "AdvancedInfoItemRequest": {
         "required": [
-          "name"
+          "currency",
+          "game",
+          "market",
+          "marketHashNames"
+        ],
+        "type": "object",
+        "properties": {
+          "market": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "game": {
+            "$ref": "#/components/schemas/GameType"
+          },
+          "marketHashNames": {
+            "maxItems": 50,
+            "minItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/SteamCurrency"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AdvancedInfoItemResponse": {
+        "required": [
+          "buyOffers",
+          "iconUrl",
+          "marketItemUrl",
+          "name",
+          "quality",
+          "sellOffers",
+          "statisticsInfo",
+          "type",
+          "updateTime"
         ],
         "type": "object",
         "properties": {
           "name": {
-            "description": "The name of the plant",
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+          "type": {
+            "type": "string",
+            "nullable": true
           },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
+          "quality": {
+            "type": "string",
+            "nullable": true
+          },
+          "iconUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "marketItemUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "buyOffers": {
+            "$ref": "#/components/schemas/OffersResponse"
+          },
+          "sellOffers": {
+            "$ref": "#/components/schemas/AdvancedSellOffersResponse"
+          },
+          "statisticsInfo": {
+            "$ref": "#/components/schemas/AdvancedStatisticsInfoResponse"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
           }
-        ]
+        },
+        "additionalProperties": false
       },
-      "Error": {
+      "AdvancedSellOffersResponse": {
         "required": [
-          "error",
-          "message"
+          "bestSellOffer",
+          "bestSellOfferWithHold",
+          "sellOffers",
+          "sellOffersWithHold"
         ],
         "type": "object",
         "properties": {
-          "error": {
+          "bestSellOffer": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sellOffers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SellOffersResponse"
+            },
+            "nullable": true
+          },
+          "bestSellOfferWithHold": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sellOffersWithHold": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SellOffersResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AdvancedStatisticsInfoResponse": {
+        "required": [
+          "average1dPrice",
+          "average30dPrice",
+          "average7dPrice",
+          "average90dPrice",
+          "guaranteedPrice",
+          "median1dPrice",
+          "median30dPrice",
+          "median7dPrice",
+          "median90dPrice",
+          "popularity14d",
+          "popularity1d",
+          "popularity30d",
+          "popularity7d",
+          "popularity90d",
+          "range30Percent30dPrice",
+          "range30Percent7dPrice",
+          "range50Percent30dPrice",
+          "range50Percent7dPrice",
+          "range70Percent30dPrice",
+          "range70Percent7dPrice",
+          "range90Percent30dPrice",
+          "range90Percent7dPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "average1dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "average7dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "average30dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "average90dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "median1dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "median7dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "median30dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "median90dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range30Percent7dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range50Percent7dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range70Percent7dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range90Percent7dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range30Percent30dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range50Percent30dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range70Percent30dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range90Percent30dPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "guaranteedPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "popularity1d": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "popularity7d": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "popularity14d": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "popularity30d": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "popularity90d": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AnalyzeItemsRequest": {
+        "required": [
+          "daysCount",
+          "game",
+          "marketHashNames"
+        ],
+        "type": "object",
+        "properties": {
+          "marketHashNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "game": {
+            "$ref": "#/components/schemas/GameType"
+          },
+          "daysCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AnalyzeItemsResponse": {
+        "required": [
+          "marketHashName",
+          "marketsAnalytics"
+        ],
+        "type": "object",
+        "properties": {
+          "marketHashName": {
+            "type": "string",
+            "nullable": true
+          },
+          "marketsAnalytics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketAnalytics"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BadRequestCompareTablesResponse": {
+        "required": [
+          "message",
+          "responseType"
+        ],
+        "type": "object",
+        "properties": {
+          "responseType": {
+            "$ref": "#/components/schemas/BadRequestCompareTablesResponseType"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BadRequestCompareTablesResponseType": {
+        "enum": [
+          "DuplicateSalesCountFilters"
+        ],
+        "type": "string"
+      },
+      "BaseInfoItemResponse": {
+        "required": [
+          "buyOffers",
+          "iconUrl",
+          "marketUrl",
+          "name",
+          "quality",
+          "sellOffers",
+          "statisticsInfo",
+          "type",
+          "updateTime"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "quality": {
+            "type": "string",
+            "nullable": true
+          },
+          "iconUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "marketUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "buyOffers": {
+            "$ref": "#/components/schemas/OffersResponse"
+          },
+          "sellOffers": {
+            "$ref": "#/components/schemas/OffersResponse"
+          },
+          "statisticsInfo": {
+            "$ref": "#/components/schemas/StatisticsInfoResponse"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BaseInfoOrderParameter": {
+        "enum": [
+          "Name",
+          "SellPrice",
+          "BuyPrice"
+        ],
+        "type": "string"
+      },
+      "CompareTablesRequest": {
+        "required": [
+          "currency",
+          "firstMarket",
+          "firstMarketOptions",
+          "game",
+          "paginationRequest",
+          "secondMarket",
+          "secondMarketOptions"
+        ],
+        "type": "object",
+        "properties": {
+          "game": {
+            "$ref": "#/components/schemas/GameType"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/SteamCurrency"
+          },
+          "firstMarketOptions": {
+            "$ref": "#/components/schemas/FirstMarketOptions"
+          },
+          "secondMarketOptions": {
+            "$ref": "#/components/schemas/SecondMarketOptions"
+          },
+          "paginationRequest": {
+            "$ref": "#/components/schemas/PaginationRequest"
+          },
+          "marketHashNameFilter": {
+            "$ref": "#/components/schemas/MarketHashNameFilter"
+          },
+          "profitPercentFilter": {
+            "$ref": "#/components/schemas/ProfitPercentFilter"
+          },
+          "profitFilter": {
+            "$ref": "#/components/schemas/ProfitFilter"
+          },
+          "isOverstock": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "displaySoldOutItems": {
+            "type": "boolean"
+          },
+          "holdFilter": {
+            "$ref": "#/components/schemas/HoldOptions"
+          },
+          "salesCountPeriod": {
+            "$ref": "#/components/schemas/TableSaleCountOptionPeriod"
+          },
+          "salesCountFilters": {
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesCountFilter"
+            },
+            "nullable": true
+          },
+          "firstMarket": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "secondMarket": {
+            "$ref": "#/components/schemas/Market"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompareTablesResponse": {
+        "required": [
+          "firstMarketInfo",
+          "marketHashName",
+          "popularities",
+          "secondMarketInfo"
+        ],
+        "type": "object",
+        "properties": {
+          "marketHashName": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstMarketInfo": {
+            "$ref": "#/components/schemas/MarketInfoDtoResponse"
+          },
+          "secondMarketInfo": {
+            "$ref": "#/components/schemas/MarketInfoDtoResponse"
+          },
+          "popularities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemPopularityDtoResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DefaultCommissionsResponse": {
+        "required": [
+          "avanMarketCommission",
+          "bitskinsCommission",
+          "buffCommission",
+          "c5GameCommission",
+          "csDealsCommission",
+          "csFloatCommission",
+          "csMoneyMarketCommission",
+          "csMoneyTradeCommission",
+          "csTradeMarketCommission",
+          "csTradeTradeCommission",
+          "dmarketCommission",
+          "ggSwapCommission",
+          "lisSkinsCommission",
+          "lootFarmCommission",
+          "shadowPayCommission",
+          "skinportCommission",
+          "skinsMonkeyCommission",
+          "skinSwapMarketCommission",
+          "skinSwapTradeCommission",
+          "steamCommission",
+          "tmCommission",
+          "tradeItMarketCommission",
+          "tradeItTradeCommission",
+          "waxpeerCommission"
+        ],
+        "type": "object",
+        "properties": {
+          "steamCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "buffCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "tmCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "waxpeerCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "dmarketCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "csMoneyTradeCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "csMoneyMarketCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "bitskinsCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "lootFarmCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "tradeItMarketCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "tradeItTradeCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "ggSwapCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "csFloatCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "lisSkinsCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "skinportCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "shadowPayCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "skinSwapMarketCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "skinSwapTradeCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "csTradeTradeCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "csTradeMarketCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "csDealsCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "c5GameCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "avanMarketCommission": {
+            "type": "number",
+            "format": "double"
+          },
+          "skinsMonkeyCommission": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FirstMarketCountFilter": {
+        "type": "object",
+        "properties": {
+          "minValue": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FirstMarketOptions": {
+        "required": [
+          "firstMarketPriceType"
+        ],
+        "type": "object",
+        "properties": {
+          "firstMarketPriceType": {
+            "$ref": "#/components/schemas/PriceType"
+          },
+          "firstMarketPriceFilter": {
+            "$ref": "#/components/schemas/FirstMarketPriceFilter"
+          },
+          "firstMarketCountFilter": {
+            "$ref": "#/components/schemas/FirstMarketCountFilter"
+          },
+          "updateTimeFilter": {
+            "$ref": "#/components/schemas/UpdateTimeFilter"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FirstMarketPriceFilter": {
+        "type": "object",
+        "properties": {
+          "minValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GameType": {
+        "enum": [
+          "Dota2",
+          "CsGo",
+          "Rust"
+        ],
+        "type": "string"
+      },
+      "GetItemsStatisticsResponse": {
+        "required": [
+          "iconUrl",
+          "marketInfos",
+          "name",
+          "quality",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "quality": {
+            "type": "string",
+            "nullable": true
+          },
+          "iconUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "marketInfos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketInfo"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetPublicApiMethodCostsResponse": {
+        "required": [
+          "cost",
+          "method"
+        ],
+        "type": "object",
+        "properties": {
+          "method": {
+            "$ref": "#/components/schemas/PublicApiMethod"
+          },
+          "cost": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HistoryResponse": {
+        "required": [
+          "price",
+          "quantity",
+          "timestamp"
+        ],
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
             "type": "integer",
             "format": "int32"
           },
-          "message": {
-            "type": "string"
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
           }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+        },
+        "additionalProperties": false
+      },
+      "HoldOptions": {
+        "required": [
+          "maxHold",
+          "minHold"
+        ],
+        "type": "object",
+        "properties": {
+          "minHold": {
+            "maximum": 7,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxHold": {
+            "maximum": 7,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemHistoryInfoRequest": {
+        "required": [
+          "currency",
+          "game",
+          "market",
+          "marketHashNames"
+        ],
+        "type": "object",
+        "properties": {
+          "market": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "game": {
+            "$ref": "#/components/schemas/GameType"
+          },
+          "marketHashNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/SteamCurrency"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemHistoryInfoResponse": {
+        "required": [
+          "history",
+          "marketHashName"
+        ],
+        "type": "object",
+        "properties": {
+          "marketHashName": {
+            "type": "string",
+            "nullable": true
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ItemPopularityDtoResponse": {
+        "required": [
+          "market",
+          "marketId",
+          "salesCount"
+        ],
+        "type": "object",
+        "properties": {
+          "marketId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "market": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "salesCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Market": {
+        "enum": [
+          "Steam",
+          "Tm",
+          "Buff",
+          "Waxpeer",
+          "Dmarket",
+          "CsMoneyTrade",
+          "CsMoneyMarket",
+          "Bitskins",
+          "LootFarm",
+          "TradeItStore",
+          "TradeItTrade",
+          "GgSwap",
+          "CsFloat",
+          "LisSkins",
+          "Skinport",
+          "ShadowPay",
+          "SkinSwapMarket",
+          "SkinSwapTrade",
+          "CsTradeTrade",
+          "CsTradeMarket",
+          "CsDeals",
+          "C5GameMarket",
+          "AvanMarket",
+          "SkinsMonkey"
+        ],
+        "type": "string"
+      },
+      "MarketAnalytics": {
+        "required": [
+          "bestBuyOffer",
+          "bestSellOffer",
+          "market",
+          "salesCount"
+        ],
+        "type": "object",
+        "properties": {
+          "market": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "salesCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bestBuyOffer": {
+            "type": "number",
+            "format": "double"
+          },
+          "bestSellOffer": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MarketHashNameFilter": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "maxLength": 1024,
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MarketInfo": {
+        "required": [
+          "itemMarketId",
+          "market"
+        ],
+        "type": "object",
+        "properties": {
+          "market": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "itemMarketId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MarketInfoDtoResponse": {
+        "required": [
+          "bestOfferCount",
+          "holdInfo",
+          "id",
+          "overstockInfo",
+          "price",
+          "priceUsd",
+          "realPrice",
+          "realPriceCurrency",
+          "soldOutTime",
+          "totalSellOffersCount",
+          "updateTime"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "priceUsd": {
+            "type": "number",
+            "format": "double"
+          },
+          "realPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "realPriceCurrency": {
+            "$ref": "#/components/schemas/SteamCurrency"
+          },
+          "bestOfferCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalSellOffersCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "overstockInfo": {
+            "$ref": "#/components/schemas/OverstockInfo"
+          },
+          "holdInfo": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "soldOutTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OfferResponse": {
+        "required": [
+          "price",
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OffersResponse": {
+        "required": [
+          "bestOffer",
+          "offers"
+        ],
+        "type": "object",
+        "properties": {
+          "bestOffer": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "offers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfferResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderParametersRequest": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "maxLength": 64,
+            "type": "string",
+            "nullable": true
+          },
+          "sortOrder": {
+            "$ref": "#/components/schemas/SortOrder"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OverstockInfo": {
+        "required": [
+          "currentCount",
+          "limit"
+        ],
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaginationRequest": {
+        "type": "object",
+        "properties": {
+          "orderParameters": {
+            "$ref": "#/components/schemas/OrderParametersRequest"
+          },
+          "skipCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "takeCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PriceType": {
+        "enum": [
+          "Guaranteed",
+          "Buy",
+          "Sell",
+          "SellWithHold",
+          "SellWithoutHold",
+          "Auction",
+          "Average1d",
+          "Average7d",
+          "Average30d",
+          "Average90d",
+          "Median1d",
+          "Median7d",
+          "Median30d",
+          "Median90d",
+          "Range30Percent7d",
+          "Range50Percent7d",
+          "Range70Percent7d",
+          "Range90Percent7d",
+          "Range30Percent30d",
+          "Range50Percent30d",
+          "Range70Percent30d",
+          "Range90Percent30d"
+        ],
+        "type": "string"
+      },
+      "ProfitFilter": {
+        "type": "object",
+        "properties": {
+          "minValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProfitPercentFilter": {
+        "type": "object",
+        "properties": {
+          "minValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PublicApiMethod": {
+        "enum": [
+          "BaseInfos",
+          "AdvancedInfos",
+          "ItemsHistory",
+          "AnalyzeItems",
+          "CompareTables",
+          "GetItemsStatistics"
+        ],
+        "type": "string"
+      },
+      "SalesCountFilter": {
+        "type": "object",
+        "properties": {
+          "market": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "period": {
+            "$ref": "#/components/schemas/TableSaleCountOptionPeriod"
+          },
+          "salesCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SecondMarketCountFilter": {
+        "type": "object",
+        "properties": {
+          "minValue": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SecondMarketOptions": {
+        "required": [
+          "secondMarketPriceType"
+        ],
+        "type": "object",
+        "properties": {
+          "secondMarketPriceType": {
+            "$ref": "#/components/schemas/PriceType"
+          },
+          "secondMarketPriceFilter": {
+            "$ref": "#/components/schemas/SecondMarketPriceFilter"
+          },
+          "secondMarketCountFilter": {
+            "$ref": "#/components/schemas/SecondMarketCountFilter"
+          },
+          "updateTimeFilter": {
+            "$ref": "#/components/schemas/UpdateTimeFilter"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SecondMarketPriceFilter": {
+        "type": "object",
+        "properties": {
+          "minValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SellOffersResponse": {
+        "required": [
+          "holdDays",
+          "price",
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "holdDays": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SortOrder": {
+        "enum": [
+          "Ascending",
+          "Descending"
+        ],
+        "type": "string"
+      },
+      "StatisticsInfoResponse": {
+        "required": [
+          "averagePrice30Day",
+          "corridorPrice30Day",
+          "medianPrice30Day",
+          "sales30Day",
+          "sales7Day"
+        ],
+        "type": "object",
+        "properties": {
+          "averagePrice30Day": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "medianPrice30Day": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "corridorPrice30Day": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sales7Day": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "sales30Day": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SteamCurrency": {
+        "enum": [
+          "Unknown",
+          "USD",
+          "EUR",
+          "CHF",
+          "RUB",
+          "NOK",
+          "SGD",
+          "KRW",
+          "TRY",
+          "UAH",
+          "MXN",
+          "CNY",
+          "INR",
+          "KZT"
+        ],
+        "type": "string"
+      },
+      "SupportedCurrenciesResponse": {
+        "required": [
+          "currencies"
+        ],
+        "type": "object",
+        "properties": {
+          "currencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SteamCurrency"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupportedMarketResponse": {
+        "required": [
+          "markets"
+        ],
+        "type": "object",
+        "properties": {
+          "markets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Market"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TableSaleCountOptionPeriod": {
+        "enum": [
+          "Day",
+          "Week",
+          "HalfMonth",
+          "Month"
+        ],
+        "type": "string"
+      },
+      "UnauthorizedPublicApiResponse": {
+        "required": [
+          "message",
+          "responseType"
+        ],
+        "type": "object",
+        "properties": {
+          "responseType": {
+            "$ref": "#/components/schemas/UnauthorizedPublicApiResponseType"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UnauthorizedPublicApiResponseType": {
+        "enum": [
+          "InvalidToken",
+          "TokenCountNotEnough"
+        ],
+        "type": "string"
+      },
+      "UpdateTimeFilter": {
+        "type": "object",
+        "properties": {
+          "minTime": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "maxTime": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       }
     }
   }
